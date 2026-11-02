@@ -2008,9 +2008,10 @@ Library.CreateColorpicker = function(self, Data)
     local Debounce = false
     local RenderStepped
 
+    local ActiveSlider = nil
     isASubWindowOpenLul.SlidePalette = function(self, Input)
         if Input then
-            if Debounce then
+            if Debounce and ActiveSlider == "Palette" then
                 local saturation = MathClamp(1 - (Input.Position.X - Items["Palette"].Instance.AbsolutePosition.X) / Items["Palette"].Instance.AbsoluteSize.X, 0, 1)
                 local value = MathClamp(1 - (Input.Position.Y - Items["Palette"].Instance.AbsolutePosition.Y) / Items["Palette"].Instance.AbsoluteSize.Y, 0, 1)
 
@@ -2031,7 +2032,7 @@ Library.CreateColorpicker = function(self, Data)
     end
     isASubWindowOpenLul.SlideHue = function(self, Input)
         if Input then
-            if Debounce then
+            if Debounce and ActiveSlider == "Hue" then
                 isASubWindowOpenLul.Hue = MathClamp((Input.Position.X - Items["Hue"].Instance.AbsolutePosition.X) / Items["Hue"].Instance.AbsoluteSize.X, 0, 1)
 
                 local HuePosition = MathClamp((Input.Position.X - Items["Hue"].Instance.AbsolutePosition.X) / Items["Hue"].Instance.AbsoluteSize.X, 0, 0.975)
@@ -2047,7 +2048,7 @@ Library.CreateColorpicker = function(self, Data)
     end
     isASubWindowOpenLul.SlideAlpha = function(self, Input)
         if Input then
-            if Debounce then
+            if Debounce and ActiveSlider == "Alpha" then
                 isASubWindowOpenLul.Alpha = MathClamp((Input.Position.X - Items["Alpha"].Instance.AbsolutePosition.X) / Items["Alpha"].Instance.AbsoluteSize.X, 0, 1)
 
                 local AlphaPosition = MathClamp((Input.Position.X - Items["Alpha"].Instance.AbsolutePosition.X) / Items["Alpha"].Instance.AbsoluteSize.X, 0, 0.975)
@@ -2097,6 +2098,7 @@ Library.CreateColorpicker = function(self, Data)
     Items["Palette"]:Connect("InputBegan", function(Input)
         if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then
             Debounce = true
+            ActiveSlider = "Palette"
             isASubWindowOpenLul:SlidePalette(Input)
 
             if RenderStepped then
@@ -2106,6 +2108,7 @@ Library.CreateColorpicker = function(self, Data)
             RenderStepped = Input.Changed:Connect(function()
                 if Input.UserInputState == Enum.UserInputState.End then
                     Debounce = false
+                    ActiveSlider = nil
                     RenderStepped:Disconnect()
                     RenderStepped = nil
                 end
@@ -2115,6 +2118,7 @@ Library.CreateColorpicker = function(self, Data)
     Items["HueInline"]:Connect("InputBegan", function(Input)
         if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then
             Debounce = true
+            ActiveSlider = "Hue"
             isASubWindowOpenLul:SlideHue(Input)
 
             if RenderStepped then
@@ -2124,6 +2128,7 @@ Library.CreateColorpicker = function(self, Data)
             RenderStepped = Input.Changed:Connect(function()
                 if Input.UserInputState == Enum.UserInputState.End then
                     Debounce = false
+                    ActiveSlider = nil
                     RenderStepped:Disconnect()
                     RenderStepped = nil
                 end
@@ -2133,6 +2138,7 @@ Library.CreateColorpicker = function(self, Data)
     Items["Alpha"]:Connect("InputBegan", function(Input)
         if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then
             Debounce = true
+            ActiveSlider = "Alpha"
             isASubWindowOpenLul:SlideAlpha(Input)
 
             if RenderStepped then
@@ -2142,6 +2148,7 @@ Library.CreateColorpicker = function(self, Data)
             RenderStepped = Input.Changed:Connect(function()
                 if Input.UserInputState == Enum.UserInputState.End then
                     Debounce = false
+                    ActiveSlider = nil
                     RenderStepped:Disconnect()
                     RenderStepped = nil
                 end
